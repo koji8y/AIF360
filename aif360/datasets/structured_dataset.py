@@ -1,3 +1,4 @@
+from typing import Any, List, Union, Optional, Collection, Set
 from collections import defaultdict
 from contextlib import contextmanager
 from copy import deepcopy
@@ -7,6 +8,9 @@ import numpy as np
 import pandas as pd
 
 from aif360.datasets import Dataset
+
+
+ValueType = Union[str, int, float, np.float64]
 
 
 class StructuredDataset(Dataset):
@@ -58,10 +62,10 @@ class StructuredDataset(Dataset):
                 }
     """
 
-    def __init__(self, df, label_names, protected_attribute_names,
-                 instance_weights_name=None, scores_names=[],
-                 unprivileged_protected_attributes=[],
-                 privileged_protected_attributes=[], metadata=None):
+    def __init__(self, df: pd.DataFrame, label_names: List[Any], protected_attribute_names: List[str],
+                 instance_weights_name: Optional[str] = None, scores_names: List[str] = [],
+                 unprivileged_protected_attributes: List[np.ndarray[np._ShapeType, ValueType]] = [],
+                 privileged_protected_attributes: List[np.ndarray[np._ShapeType, ValueType]] = [], metadata=None):
         """
         Args:
             df (pandas.DataFrame): Input DataFrame with features, labels, and
@@ -100,7 +104,7 @@ class StructuredDataset(Dataset):
 
         # Convert all column names to strings
         df.columns = df.columns.astype(str).tolist()
-        label_names = list(map(str, label_names))
+        label_names: List[str] = list(map(str, label_names))
         protected_attribute_names = list(map(str, protected_attribute_names))
 
         self.feature_names = [n for n in df.columns if n not in label_names
@@ -109,7 +113,7 @@ class StructuredDataset(Dataset):
         self.label_names = label_names
         self.features = df[self.feature_names].values.copy()
         self.labels = df[self.label_names].values.copy()
-        self.instance_names = df.index.astype(str).tolist()
+        self.instance_names: List[str] = df.index.astype(str).tolist()
 
         if scores_names:
             self.scores = df[scores_names].values.copy()
@@ -117,13 +121,13 @@ class StructuredDataset(Dataset):
             self.scores = self.labels.copy()
 
         df_prot = df.loc[:, protected_attribute_names]
-        self.protected_attribute_names = df_prot.columns.astype(str).tolist()
+        self.protected_attribute_names: List[str] = df_prot.columns.astype(str).tolist()
         self.protected_attributes = df_prot.values.copy()
 
         # Infer the privileged and unprivileged values in not provided
         if unprivileged_protected_attributes and privileged_protected_attributes:
-            self.unprivileged_protected_attributes = unprivileged_protected_attributes
-            self.privileged_protected_attributes = privileged_protected_attributes
+            self.unprivileged_protected_attributes: Collection[np.ndarray[np._ShapeType, ValueType]] = unprivileged_protected_attributes
+            self.privileged_protected_attributes: Collection[np.ndarray[np._ShapeType, ValueType]] = privileged_protected_attributes
         else:
             self.unprivileged_protected_attributes = [
                 np.sort(np.unique(df_prot[attr].values))[:-1]
@@ -257,8 +261,8 @@ class StructuredDataset(Dataset):
             warning("'scores' has no well-defined meaning out of range [0, 1].")
 
         for i in range(len(self.privileged_protected_attributes)):
-            priv = set(self.privileged_protected_attributes[i])
-            unpriv = set(self.unprivileged_protected_attributes[i])
+            priv: Set[ValueType] = set(self.privileged_protected_attributes[i])
+            unpriv: Set[ValueType] = set(self.unprivileged_protected_attributes[i])
             # check for duplicates
             if priv & unpriv:
                 raise ValueError("'privileged_protected_attributes' and "
