@@ -1,5 +1,6 @@
 import numpy as np
 from warnings import warn
+import math
 
 from aif360.algorithms import Transformer
 from aif360.metrics import utils
@@ -23,7 +24,7 @@ class RejectOptionClassification(Transformer):
                 low_class_thresh=0.01, high_class_thresh=0.99,
                 num_class_thresh=100, num_ROC_margin=50,
                 metric_name="Statistical parity difference",
-                metric_ub=0.05, metric_lb=-0.05):
+                metric_ub=0.05, metric_lb=-0.05, accuracy_metric_name="Balanced Accuracy"):
         """
         Args:
             unprivileged_groups (dict or list(dict)): Representation for
@@ -50,11 +51,13 @@ class RejectOptionClassification(Transformer):
             privileged_groups=privileged_groups,
             low_class_thresh=low_class_thresh, high_class_thresh=high_class_thresh,
             num_class_thresh=num_class_thresh, num_ROC_margin=num_ROC_margin,
-            metric_name=metric_name)
+            metric_name=metric_name,
+            accuracy_metric_name=accuracy_metric_name)
 
         allowed_metrics = ["Statistical parity difference",
                            "Average odds difference",
-                           "Equal opportunity difference"]
+                           "Equal opportunity difference",
+                           "F1 difference"]
 
         self.unprivileged_groups = unprivileged_groups
         self.privileged_groups = privileged_groups
@@ -66,6 +69,7 @@ class RejectOptionClassification(Transformer):
         self.metric_name = metric_name
         self.metric_ub = metric_ub
         self.metric_lb = metric_lb
+        self.accuracy_metric_name = accuracy_metric_name
 
         self.classification_threshold = None
         self.ROC_margin = None
@@ -139,15 +143,45 @@ class RejectOptionClassification(Transformer):
                 ROC_margin_arr[cnt] = self.ROC_margin
                 class_thresh_arr[cnt] = self.classification_threshold
 
-                # Balanced accuracy and fairness metric computations
-                balanced_acc_arr[cnt] = 0.5*(classified_transf_metric.true_positive_rate()\
-                                       +classified_transf_metric.true_negative_rate())
+                if self.accuracy_metric_name == 'F1':
+                    precision = classified_transf_metric.precision()
+                    recall = classified_transf_metric.recall()
+                    if (precision + recall) != 0:
+                        f1 = (2 * precision * recall) / (precision + recall)
+                        if math.isnan(f1):
+                            f1 = 0
+                    else:
+                        f1 = 0
+                    balanced_acc_arr[cnt] = f1
+                else:
+                    # Balanced accuracy and fairness metric computations
+                    balanced_acc_arr[cnt] = 0.5*(classified_transf_metric.true_positive_rate()\
+                                           +classified_transf_metric.true_negative_rate())
+
                 if self.metric_name == "Statistical parity difference":
                     fair_metric_arr[cnt] = dataset_transf_metric_pred.mean_difference()
                 elif self.metric_name == "Average odds difference":
                     fair_metric_arr[cnt] = classified_transf_metric.average_odds_difference()
                 elif self.metric_name == "Equal opportunity difference":
                     fair_metric_arr[cnt] = classified_transf_metric.equal_opportunity_difference()
+                elif self.metric_name == "F1 difference":
+                    precision_priv = classified_transf_metric.precision(privileged=True)
+                    recall_priv = classified_transf_metric.recall(privileged=True)
+                    if (precision_priv + recall_priv) != 0:
+                        f1_priv = 2 * precision_priv * recall_priv / (precision_priv + recall_priv)
+                        if math.isnan(f1_priv):
+                            f1_priv = 0
+                    else:
+                        f1_priv = 0
+                    precision_unpriv = classified_transf_metric.precision(privileged=False)
+                    recall_unpriv = classified_transf_metric.recall(privileged=False)
+                    if (precision_unpriv + recall_unpriv) != 0:
+                        f1_unpriv = 2 * precision_unpriv * recall_unpriv / (precision_unpriv + recall_unpriv)
+                        if math.isnan(f1_unpriv):
+                            f1_unpriv = 0
+                    else:
+                        f1_unpriv = 0
+                    fair_metric_arr[cnt] = f1_priv - f1_unpriv
 
                 cnt += 1
 
@@ -242,3 +276,6 @@ def _get_pareto_frontier(scores, return_mask = True):  # <- Fastest for many poi
         return is_efficient_mask
     else:
         return is_efficient
+
+def replacement_check():
+    return 0
