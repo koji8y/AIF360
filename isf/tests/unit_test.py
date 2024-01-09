@@ -28,7 +28,7 @@ from aif360.datasets import CompasDataset
 
 from isf.core.intersectional_fairness import IntersectionalFairness
 from isf.utils.common import classify, output_subgroup_metrics, convert_labels, create_multi_group_label
-from tests.stream import MuteStdout
+from isf.tests.stream import MuteStdout
 
 
 MODEL_ANSWER_PATH = './tests/result/'

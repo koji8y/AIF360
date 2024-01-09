@@ -13,7 +13,7 @@
 # F. Kamiran, A. Karim, and X. Zhang, “Decision Theory for Discrimination-Aware Classification,” IEEE International Conference on Data Mining, 2012.
 
 # %%
-%matplotlib inline
+#%matplotlib inline
 
 # %%
 from pylab import rcParams
@@ -34,16 +34,16 @@ import pandas as pd
 # Note: To download it manually, follow [README.md in AIF360](https://github.com/Trusted-AI/AIF360/tree/master/aif360/data) to install the data set.  
 
 # %%
-!curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data
+#!curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data
 
 # %%
-!curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test
+#!curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test
 
 # %%
-!curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
+#!curl -O https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.names
 
 # %%
-!mv adult* /usr/local/lib/python3.7/dist-packages/aif360/data/raw/adult
+#!mv adult* /usr/local/lib/python3.7/dist-packages/aif360/data/raw/adult
 
 # %%
 from aif360.datasets import AdultDataset
