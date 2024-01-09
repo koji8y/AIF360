@@ -256,15 +256,19 @@ class StructuredDataset(Dataset):
         if np.any(np.logical_or(self.scores < 0., self.scores > 1.)):
             warning("'scores' has no well-defined meaning out of range [0, 1].")
 
+        dchk = 0
         for i in range(len(self.privileged_protected_attributes)):
             priv = set(self.privileged_protected_attributes[i])
             unpriv = set(self.unprivileged_protected_attributes[i])
             # check for duplicates
             if priv & unpriv:
-                raise ValueError("'privileged_protected_attributes' and "
-                    "'unprivileged_protected_attributes' should not share any "
-                    "common elements:\n\tBoth contain {} for feature {}".format(
+                if len(self.privileged_protected_attributes) == 1:
+                    raise ValueError("'privileged_protected_attributes' and "
+                        "'unprivileged_protected_attributes' should not share any "
+                        "common elements:\n\tBoth contain {} for feature {}".format(
                         list(priv & unpriv), self.protected_attribute_names[i]))
+                else:
+                    dchk += 1
             # check for unclassified values
             if not set(self.protected_attributes[:, i]) <= (priv | unpriv):
                 raise ValueError("All observed values for protected attributes "
@@ -278,6 +282,11 @@ class StructuredDataset(Dataset):
                 warning("{} listed but not observed for feature {}".format(
                     list((priv | unpriv) - set(self.protected_attributes[:, i])),
                     self.protected_attribute_names[i]))
+        if dchk == len(self.privileged_protected_attributes):
+            raise ValueError("'privileged_protected_attributes' and "
+                "'unprivileged_protected_attributes' should not share any "
+                "common elements:\n\tBoth contain {} for feature {}".format(
+                list(priv & unpriv), self.protected_attribute_names[i]))
 
     @contextmanager
     def temporarily_ignore(self, *fields):
@@ -571,3 +580,6 @@ class StructuredDataset(Dataset):
                 feature_names_nodum.append(fname)
 
         return feature_names_dum_d, feature_names_nodum
+
+def replacement_check():
+    return 0
