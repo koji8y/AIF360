@@ -157,7 +157,7 @@ class IntersectionalFairness():
         self.logger.addHandler(handler)
         self.logger.setLevel(ERROR)
 
-    def fit(self, dataset_actual, dataset_predicted=None, dataset_valid=None, options={}):
+    def fit(self, dataset_actual, dataset_predicted=None, dataset_valid=None, options={}, marudebug=False):
         """
         Learns the fair classifier.
 
@@ -176,20 +176,31 @@ class IntersectionalFairness():
             Refer to the API of the specified algorithm for details
         """
 
+        if marudebug:
+            def maruprint(msg, **kwargs):
+                print(f'marudebug - {msg}', **kwargs)
+        else:
+            def maruprint(msg, **kwargs):
+                pass
+        maruprint('fit@A')
         self.logger.debug('fitting...')
 
         # TODO need to fix sorting sensitive attributes
         # thres_sort = sorted(thres.items(), key=lambda x:x[0])  # Fixed order of sensitive attributes
         if dataset_valid is None:
+            maruprint('fit@A1 (if)')
             if self.approach_type == 'PostProcessing':
                 dataset_valid = dataset_predicted.copy(deepcopy=True)
             else:
                 dataset_valid = dataset_actual.copy(deepcopy=True)
-        fav_voting_rate_values = self._mitigate_each_pair(dataset_actual, dataset_valid=dataset_valid, dataset_predicted=dataset_predicted, enable_fit=True, options=options)
+        maruprint('fit@A2')
+        fav_voting_rate_values = self._mitigate_each_pair(dataset_actual, dataset_valid=dataset_valid, dataset_predicted=dataset_predicted, enable_fit=True, options=options, marudebug=marudebug)
 
+        maruprint('fit@B')
         p_attrs = dataset_valid.protected_attribute_names
         stat_table = []
 
+        maruprint('fit@C')
         # Calculate the accuracy and disparity for each subgroup in about 100 ways while changing the score threshold
         for uf_t in np.linspace(0.01, 0.99, 99):
             ds_tmp = dataset_valid.copy(deepcopy=True)
@@ -202,9 +213,11 @@ class IntersectionalFairness():
         dfst = pd.DataFrame(stat_table, columns=protected_attribute_names + ['uf_t', 'P', 'N', 'P^', 'N^', 'TP', 'TN', 'FP', 'FN', 'tpr', 'tnr', 'bl_acc', 'precision', 'f1', 'sel_rate', 'difference', 'ratio'])
         self.dfst_all = dfst
 
+        maruprint('fit@D')
         # For each group, select the uf_t with the highest accuracy rate within the range of the disparity upper limit
         df_result = pd.DataFrame()
         for g in self.group_protected_attrs:
+            maruprint(f'fit@D iter / {len(self.group_protected_attrs)}')
             dfst_each_group = pd.DataFrame()
             for key, value in g[0].items():
                 if len(dfst_each_group) == 0:
@@ -267,6 +280,7 @@ class IntersectionalFairness():
             else:
                 df_result = pd.concat([df_result, dfst_each_group])
 
+        maruprint('fit@E')
         # df_result.to_csv(self.TO.out_dir + '/valid_result_stat.csv')
         self.logger.debug('done.')
         self.df_result = df_result
@@ -332,7 +346,7 @@ class IntersectionalFairness():
 
         return ds_train_protected_attributes, self.models[pair_key], pair_key
 
-    def _mitigate_each_pair(self, dataset_actual, enable_fit=False, dataset_predicted=None, dataset_valid=None, options={}):
+    def _mitigate_each_pair(self, dataset_actual, enable_fit=False, dataset_predicted=None, dataset_valid=None, options={}, marudebug=False):
 
         self.logger.debug('_mitigate_each_pair()')
 

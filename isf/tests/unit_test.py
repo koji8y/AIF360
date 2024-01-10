@@ -31,7 +31,7 @@ from isf.utils.common import classify, output_subgroup_metrics, convert_labels, 
 from isf.tests.stream import MuteStdout
 
 
-MODEL_ANSWER_PATH = './tests/result/'
+MODEL_ANSWER_PATH = './isf/tests/result/'
 
 
 class TestStringMethods(unittest.TestCase):
@@ -71,21 +71,35 @@ class TestStringMethods(unittest.TestCase):
         s_metrics = 'DemographicParity'
 
         # test
-        with MuteStdout():
+        print('@@@A')
+        if True: #with MuteStdout():
+            from sys import stderr
+            print('@@@A_1', file=stderr)
             ID = IntersectionalFairness(s_algorithm, s_metrics)
-            ID.fit(self.ds_train)
+            # print('@@@A_2', file=stderr)
+            # ID.fit(self.ds_train)
+            print('@@@A_2_a', file=stderr)
+            tr = self.ds_train
+            print('@@@A_2_b', file=stderr)
+            ID.fit(tr, marudebug=True)
+            
+            print('@@@A_3', file=stderr)
             ds_predicted = ID.predict(self.ds_test)
 
+        print('@@@B')
         group_protected_attrs, label_unique_nums = create_multi_group_label(self.dataset)
         g_metrics, sg_metrics = output_subgroup_metrics(self.ds_test, ds_predicted, group_protected_attrs)
 
+        print('@@@C')
         # pickup
         result_singleattr_bias, result_combattr_bias = self._pickup_result(g_metrics, sg_metrics)
 
+        print('@@@D')
         # load of model answer
         ma_singleattr_bias, ma_combattr_bias = self._read_modelanswer("test01_result_singleattr.csv",
                                                                       "test01_result_combattr.csv")
 
+        print('@@@E')
         assert_frame_equal(result_singleattr_bias, ma_singleattr_bias, atol=0.2)
         assert_frame_equal(result_combattr_bias, ma_combattr_bias, atol=0.2)
 
