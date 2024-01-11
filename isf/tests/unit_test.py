@@ -31,7 +31,7 @@ from isf.utils.common import classify, output_subgroup_metrics, convert_labels, 
 from isf.tests.stream import MuteStdout
 
 
-MODEL_ANSWER_PATH = './tests/result/'
+MODEL_ANSWER_PATH = './isf/tests/result/'
 
 
 class TestStringMethods(unittest.TestCase):
