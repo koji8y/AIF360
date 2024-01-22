@@ -18,7 +18,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
-from isf.algorithms.base.preprocessing import PreProcessing
+from aif360.algorithms.intersectional.preprosessing.preprocessing import PreProcessing
 from isf.algorithms.lib.relabelling import Relabeller
 
 

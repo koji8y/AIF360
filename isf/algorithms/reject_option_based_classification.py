@@ -27,7 +27,7 @@ except ImportError:
     exit()
 
 from isf.utils import const
-from isf.algorithms.base.postprocessing import PostProcessing
+from aif360.algorithms.intersectional.postprosessing.postprocessing import PostProcessing
 
 
 class RejectOptionClassification(PostProcessing):

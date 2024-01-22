@@ -18,7 +18,7 @@
 from aif360.algorithms.inprocessing.adversarial_debiasing import AdversarialDebiasing as AD
 import tensorflow as tf
 
-from isf.algorithms.base.inprocessing import InProcessing
+from aif360.algorithms.intersectional.inprosessing.inprocessing import InProcessing
 
 
 tf.compat.v1.disable_eager_execution()

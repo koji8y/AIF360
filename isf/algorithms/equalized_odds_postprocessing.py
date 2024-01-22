@@ -17,7 +17,7 @@
 import numpy as np
 import pandas as pd
 
-from isf.algorithms.base.postprocessing import PostProcessing
+from aif360.algorithms.intersectional.postprosessing.postprocessing import PostProcessing
 from isf.algorithms.lib.eq_odds import Model
 
 

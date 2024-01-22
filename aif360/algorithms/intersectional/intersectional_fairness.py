@@ -28,9 +28,9 @@ from aif360.metrics import ClassificationMetric
 
 from isf.utils import const
 from isf.utils.common import create_multi_group_label
-from isf.algorithms.base.preprocessing import PreProcessing
-from isf.algorithms.base.inprocessing import InProcessing
-from isf.algorithms.base.postprocessing import PostProcessing
+from aif360.algorithms.intersectional.preprosessing.preprocessing import PreProcessing
+from aif360.algorithms.intersectional.inprosessing.inprocessing import InProcessing
+from aif360.algorithms.intersectional.postprosessing.postprocessing import PostProcessing
 
 from isf.algorithms.massaging import Massaging
 from isf.algorithms.adversarial_debiasing import AdversarialDebiasing
