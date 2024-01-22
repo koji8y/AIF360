@@ -21,8 +21,8 @@ from pylab import rcParams
 # %%
 from aif360.algorithms.intersectional.intersectional_fairness import IntersectionalFairness
 from aif360.algorithms.intersectional.common import output_subgroup_metrics, convert_labels, create_multi_group_label
-from isf.analysis.intersectional_bias import calc_intersectionalbias, plot_intersectionalbias_compare
-from isf.analysis.metrics import check_metrics_combination_attribute, check_metrics_single_attribute
+from isf.examples.intersectional_bias import calc_intersectionalbias, plot_intersectionalbias_compare
+from isf.examples.metrics import check_metrics_combination_attribute, check_metrics_single_attribute
 
 # %%
 import numpy as np
