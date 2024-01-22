@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import seaborn as sns
 
-from isf.metrics.disparate_impact import DisparateImpact
+from aif360.metrics.disparate_impact import DisparateImpact
 from aif360.algorithms.intersectional.common import create_multi_group_label
 
 
