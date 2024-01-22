@@ -32,10 +32,10 @@ from aif360.algorithms.intersectional.preprosessing.preprocessing import PreProc
 from aif360.algorithms.intersectional.inprosessing.inprocessing import InProcessing
 from aif360.algorithms.intersectional.postprosessing.postprocessing import PostProcessing
 
-from isf.algorithms.massaging import Massaging
-from isf.algorithms.adversarial_debiasing import AdversarialDebiasing
-from isf.algorithms.reject_option_based_classification import RejectOptionClassification
-from isf.algorithms.equalized_odds_postprocessing import EqualizedOddsPostProcessing
+from aif360.algorithms.intersectional.preprosessing.massaging import Massaging
+from aif360.algorithms.intersectional.inprosessing.adversarial_debiasing import AdversarialDebiasing
+from aif360.algorithms.intersectional.postprosessing.reject_option_based_classification import RejectOptionClassification
+from aif360.algorithms.intersectional.postprosessing.equalized_odds_postprocessing import EqualizedOddsPostProcessing
 
 from logging import getLogger, StreamHandler, ERROR, Formatter
 

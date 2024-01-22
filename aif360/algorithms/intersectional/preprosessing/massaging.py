@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
 from aif360.algorithms.intersectional.preprosessing.preprocessing import PreProcessing
-from isf.algorithms.lib.relabelling import Relabeller
+from aif360.algorithms.intersectional.preprosessing.lib.relabelling import Relabeller
 
 
 class Massaging(PreProcessing):
