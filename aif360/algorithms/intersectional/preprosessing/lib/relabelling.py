@@ -33,7 +33,7 @@ from sklearn.utils.validation import check_array, check_X_y, check_is_fitted
 from sklearn.linear_model import LogisticRegression
 
 from aif360.algorithms.intersectional.preprosessing.lib.checks import check_binary
-from isf.utils.common import get_baseline
+from aif360.algorithms.intersectional.common import get_baseline
 
 
 def _n_relabels(y, s):

@@ -21,7 +21,7 @@ from matplotlib.gridspec import GridSpec
 import seaborn as sns
 
 from isf.metrics.disparate_impact import DisparateImpact
-from isf.utils.common import create_multi_group_label
+from aif360.algorithms.intersectional.common import create_multi_group_label
 
 
 METRIC_DI = "DisparateImpact"

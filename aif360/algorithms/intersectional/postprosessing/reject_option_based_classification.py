@@ -26,7 +26,7 @@ except ImportError:
     print('\n$ cp patches/reject_option_classification.py {aif360 installed directory}/algorithms/postprocessing/\n')
     exit()
 
-from isf.utils import const
+from aif360.algorithms.intersectional import const
 from aif360.algorithms.intersectional.postprosessing.postprocessing import PostProcessing
 
 

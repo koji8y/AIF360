@@ -17,7 +17,7 @@
 
 import pandas as pd
 import numpy as np
-from isf.utils.common import create_multi_group_label, output_subgroup_metrics
+from aif360.algorithms.intersectional.common import create_multi_group_label, output_subgroup_metrics
 
 
 def summary(dataset):

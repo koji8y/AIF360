@@ -27,7 +27,7 @@ environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from aif360.datasets import CompasDataset
 
 from aif360.algorithms.intersectional.intersectional_fairness import IntersectionalFairness
-from isf.utils.common import classify, output_subgroup_metrics, convert_labels, create_multi_group_label
+from aif360.algorithms.intersectional.common import classify, output_subgroup_metrics, convert_labels, create_multi_group_label
 from isf.tests.stream import MuteStdout
 
 
